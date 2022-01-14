@@ -1,57 +1,45 @@
 pipeline {
-  agent {
-    label 'jdk8'
+  agent { node { label 'kiuwan' } }
+
+  options {
+    buildDiscarder(logRotator(numToKeepStr: "10"))
+    disableConcurrentBuilds()
+    timestamps()
   }
+
   stages {
-    stage('Say Hello') {
+    stage('Checkout') {
       steps {
-        echo "Hello ${params.Name}!"
-        sh 'java -version'
-        echo "${TEST_USER_USR}"
-        echo "${TEST_USER_PSW}"
-      }
-    }
-    stage('Testing') {
-      failFast true
-      parallel {
-        stage('Java 8') {
-          agent {
-            label 'jdk8'
+        script {
+           // The below will clone your repo and will be checked out to master branch by default.
+           git credentialsId: 'jenkins-user-github', url: 'https://github.com/aakashsehgal/FMU.git'
+           // Do a ls -lart to view all the files are cloned. It will be clonned. This is just for you to be sure about it.
+           sh "ls -lart ./*" 
+           // List all branches in your repo. 
+           sh "git branch -a"
+           // Checkout to a specific branch in your repo.
+           sh "git checkout branchname"
           }
-          steps {
-            sh 'java -version'
-            sleep(time: 10, unit: 'SECONDS')
+       }
+    }
+    stage('Build') {
+      steps {
+        dir("${env.WORKSPACE}"){
+          script {
+            sh """\
+              mkdir -p ${GOPATH}/src/${ORG_PATH}
+              rm -f ${GOPATH}/src/${REPO_PATH}
+              ln -s ${env.WORKSPACE}/go/src/${REPO_PATH} ${BUILD_PATH}
+              cd ${BUILD_PATH}
+
+              make -j${nproc} -w all
+              make -w extern aat
+              make coverage
+              make -j${nproc} dist
+              make -C debian/temeva-api
+            """
           }
         }
-        stage('Java 9') {
-          agent {
-            label 'jdk9'
-          }
-          steps {
-            sh 'java -version'
-            sleep(time: 20, unit: 'SECONDS')
-          }
-        }
-      }
-    }
-    stage('Checkpoint') {
-      steps {
-        checkpoint 'Checkpoint'
       }
     }
   }
-  environment {
-    MY_NAME = 'Mary'
-    TEST_USER = credentials('spirent')
-  }
-  post {
-    aborted {
-      echo 'Why didn\'t you push my button?'
-
-    }
-
-  }
-  parameters {
-    string(name: 'Name', defaultValue: 'whoever you are', description: 'Who should I say hi to?')
-  }
-}
