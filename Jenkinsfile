@@ -25,7 +25,7 @@ pipeline {
         dir("${env.WORKSPACE}"){
           script {
             sh """\
-              today==$(date +'%Y%m%d')
+              today==`date +'%Y%m%d'`
               sudo /spirent/kiuwan/KiuwanLocalAnalyzer/bin/agent.sh -n aion -s ./orion-api -l baseline-\${today}
             """
           }
