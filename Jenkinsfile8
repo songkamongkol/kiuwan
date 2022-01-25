@@ -19,7 +19,7 @@ pipeline {
       steps {
         dir("${env.WORKSPACE}"){
           // kiuwan applicationName: 'aion8', connectionProfileUuid: 'EWH8-uwXs', failureThreshold: 40.0, sourcePath: './orion-api', timeout: 1440, unstableThreshold: 90.0
-          kiuwan applicationName_dm: 'aion8', branch_dm: 'main', changeRequest_dm: '727d768', connectionProfileUuid: 'Hez5-9srI', selectedMode: 'DELIVERY_MODE', sourcePath: './orion-api', timeout_dm: 1440
+          kiuwan applicationName_dm: 'aion8', branch_dm: 'main', changeRequest_dm: '727d768', connectionProfileUuid: 'EWH8-uwXs', selectedMode: 'DELIVERY_MODE', sourcePath: './orion-api', timeout_dm: 1440
         }
       }
     }
