@@ -20,7 +20,7 @@ pipeline {
         dir("${env.WORKSPACE}"){
           // kiuwan applicationName: 'aion8', connectionProfileUuid: 'EWH8-uwXs', failureThreshold: 40.0, sourcePath: './orion-api', timeout: 1440, unstableThreshold: 90.0
           // kiuwan applicationName_dm: 'aion8', branch_dm: 'main', changeRequest_dm: '727d768', connectionProfileUuid: 'EWH8-uwXs', selectedMode: 'DELIVERY_MODE', sourcePath: './orion-api', timeout_dm: 1440
-          kiuwan applicationName_dm: 'aion8', branch_dm: 'main', changeRequest_dm: '78235c4af', commandArgs_em: '-c -n "aion8" -l "#${BUILD_NUMBER}" --bomFile "/home/ubuntu/jenkins/workspace/aion8/aion8.bom" --bomFormat "raw"', connectionProfileUuid: 'EWH8-uwXs', selectedMode: 'DELIVERY_MODE', sourcePath: './orion-api', timeout_dm: 1440, timeout_em: 1440
+          kiuwan commandArgs_em: '-c -n "${JOB_NAME}" -l "#${BUILD_NUMBER}" -bomFile "/home/ubuntu/jenkins/workspace/aion8" -bomFormat "raw"', connectionProfileUuid: 'EWH8-uwXs', selectedMode: 'EXPERT_MODE', sourcePath: './orion-api', timeout_em: 1440
         }
       }
     }
