@@ -8,11 +8,12 @@ pipeline {
           $class: 'PerforceScm', 
           credential: 'perforce-scmbuild', 
           populate: [
-            $class: 'syncOnlyImpl', 
+            $class: 'AutoCleanImpl', 
+            delete: false, 
             modtime: false, 
             pin: '', 
             quiet: true, 
-            force: fase
+            replace: true
           ], 
           workspace: [
             $class: 'ManualWorkspaceImpl', 
