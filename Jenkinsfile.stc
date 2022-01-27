@@ -8,7 +8,7 @@ pipeline {
           $class: 'PerforceScm', 
           credential: 'perforce-scmbuild', 
           populate: [
-            $class: 'syncOnly', 
+            $class: 'syncOnlyImpl', 
             modtime: false, 
             pin: '', 
             quiet: true, 
