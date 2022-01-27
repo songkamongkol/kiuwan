@@ -18,7 +18,7 @@ pipeline {
     stage('Build') {
       steps {
         dir("${env.WORKSPACE}"){
-          kiuwan applicationName: 'AION', connectionProfileUuid: 'Hez5-9srI', failureThreshold: 40.0, sourcePath: './orion-api', timeout: 1440, unstableThreshold: 90.0
+          kiuwan applicationName: 'AION', connectionProfileUuid: 'EWH8-uwXs', failureThreshold: 40.0, sourcePath: './orion-api', timeout: 1440, unstableThreshold: 90.0
         }
       }
     }
