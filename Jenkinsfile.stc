@@ -1,5 +1,5 @@
 pipeline {
-  agent { node { label 'kiuwan05' } }
+  agent { node { label 'kiuwan04' } }
   stages {
     stage('Sync') {
       steps{
