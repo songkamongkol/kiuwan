@@ -18,7 +18,7 @@ pipeline {
     stage('Build') {
       steps {
         dir("${env.WORKSPACE}"){
-          kiuwan applicationName: 'AION', connectionProfileUuid: 'EWH8-uwXs', excludes: 'vendor/**,**/src/test/**,**/__MACOSX/**,**/*.min.js,**/*.Designer.vb,**/*.designer.vb,**/*Reference.vb,**/*Service.vb,**/*Silverlight.vb,**/*.Designer.cs,**/*.designer.cs,**/*Reference.cs,**/*Service.cs,**/*Silverlight.cs,**/.*,**/Pods/BuildHeaders/**/*.h,**/Pods/Headers/**/*.h,**/node_modules/**,**/bower_components/**,**/target/**,**/bin/**,**/obj/**,**/dist/**,**/lib/**', failureThreshold: 40.0, sourcePath: './orion-api', timeout: 1440, unstableThreshold: 90.0
+          kiuwan applicationName: 'AION', connectionProfileUuid: 'EWH8-uwXs', excludes: 'aat/**,**/*_test.go,vendor/**,**/src/test/**,**/__MACOSX/**,**/*.min.js,**/*.Designer.vb,**/*.designer.vb,**/*Reference.vb,**/*Service.vb,**/*Silverlight.vb,**/*.Designer.cs,**/*.designer.cs,**/*Reference.cs,**/*Service.cs,**/*Silverlight.cs,**/.*,**/Pods/BuildHeaders/**/*.h,**/Pods/Headers/**/*.h,**/node_modules/**,**/bower_components/**,**/target/**,**/bin/**,**/obj/**,**/dist/**,**/lib/**', failureThreshold: 40.0, sourcePath: './orion-api', timeout: 1440, unstableThreshold: 90.0
         }
       }
     }
