@@ -1,5 +1,5 @@
 pipeline {
-  agent { node { label 'kiuwan' } }
+  agent { node { label 'kiuwan-cloud' } }
   stages {
     stage('Checkout') {
       steps {
