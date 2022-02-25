@@ -1,0 +1,27 @@
+pipeline {
+  agent { node { label 'kiuwan-cloud' } }
+  stages {
+    stage('Checkout') {
+      steps {
+        dir("${env.WORKSPACE}/cloudsure-metrics-agent"){
+          script {
+             git credentialsId: 'orion-api', url: 'git@github.com:SpirentOrion/cloudsure-metrics-agent.git', branch: 'main'
+          }
+        }
+      }
+    }
+    stage('Scan') {
+      steps {
+        dir("${env.WORKSPACE}"){
+          kiuwan applicationName: 'cloudsure-metricsagent-baseline', 
+              connectionProfileUuid: 'EWH8-uwXs', 
+              excludes: '**/*_test.go,vendor/**,**/src/test/**,**/__MACOSX/**,**/*.min.js,**/*.Designer.vb,**/*.designer.vb,**/*Reference.vb,**/*Service.vb,**/*Silverlight.vb,**/*.Designer.cs,**/*.designer.cs,**/*Reference.cs,**/*Service.cs,**/*Silverlight.cs,**/.*,**/Pods/BuildHeaders/**/*.h,**/Pods/Headers/**/*.h,**/node_modules/**,**/bower_components/**,**/target/**,**/bin/**,**/obj/**,**/dist/**,**/lib/**', 
+              failureThreshold: 40.0, 
+              sourcePath: './cloudsure-metrics-agent', 
+              timeout: 1440, 
+              unstableThreshold: 90.0
+        }
+      }
+    }
+  }
+}
