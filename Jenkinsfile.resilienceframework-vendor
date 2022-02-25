@@ -1,0 +1,22 @@
+pipeline {
+  agent { node { label 'kiuwan-cloud' } }
+  stages {
+    stage('Checkout') {
+      steps {
+        dir("${env.WORKSPACE}/resilience-framework"){
+          script {
+             // The below will clone your repo and will be checked out to master branch by default.
+             git credentialsId: 'orion-api', url: 'git@github.com:SpirentOrion/resilience-framework.git'
+          }
+        }
+      }
+    }
+    stage('Scan') {
+      steps {
+        dir("${env.WORKSPACE}"){
+          kiuwan applicationName: 'cloudesure-resilienceframework-vendor', connectionProfileUuid: 'EWH8-uwXs', excludes: '**/*_test.go,**/src/test/**,**/__MACOSX/**,**/*.min.js,**/*.Designer.vb,**/*.designer.vb,**/*Reference.vb,**/*Service.vb,**/*Silverlight.vb,**/*.Designer.cs,**/*.designer.cs,**/*Reference.cs,**/*Service.cs,**/*Silverlight.cs,**/.*,**/Pods/BuildHeaders/**/*.h,**/Pods/Headers/**/*.h,**/node_modules/**,**/bower_components/**,**/target/**,**/bin/**,**/obj/**,**/dist/**,**/lib/**', failureThreshold: 40.0, sourcePath: './resilience-framework/vendor', timeout: 1440, unstableThreshold: 90.0
+        }
+      }
+    }
+  }
+}
