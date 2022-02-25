@@ -1,0 +1,27 @@
+pipeline {
+  agent { node { label 'kiuwan-cloud' } }
+  stages {
+    stage('Checkout') {
+      steps {
+        dir("${env.WORKSPACE}/meth-apps"){
+          script {
+             git credentialsId: 'orion-api', url: 'git@github.com:SpirentOrion/meth-apps.git', branch: 'master'
+          }
+        }
+      }
+    }
+    stage('Scan') {
+      steps {
+        dir("${env.WORKSPACE}"){
+          kiuwan applicationName: 'cloudsure-methapps-baseline', 
+              connectionProfileUuid: 'EWH8-uwXs', 
+              excludes: '**/*_test.go,meth-apps/methodology-center/aat/**,cloud-stress/test-scripts/**,cloud-stress/devtest/**,vendor/**,**/src/test/**,**/__MACOSX/**,**/*.min.js,**/*.Designer.vb,**/*.designer.vb,**/*Reference.vb,**/*Service.vb,**/*Silverlight.vb,**/*.Designer.cs,**/*.designer.cs,**/*Reference.cs,**/*Service.cs,**/*Silverlight.cs,**/.*,**/Pods/BuildHeaders/**/*.h,**/Pods/Headers/**/*.h,**/node_modules/**,**/bower_components/**,**/target/**,**/bin/**,**/obj/**,**/dist/**,**/lib/**', 
+              failureThreshold: 40.0, 
+              sourcePath: './meth-apps', 
+              timeout: 1440, 
+              unstableThreshold: 90.0
+        }
+      }
+    }
+  }
+}
