@@ -14,7 +14,7 @@ pipeline {
     stage('Scan') {
       steps {
         dir("${env.WORKSPACE}"){
-          kiuwan applicationName: 'cloudsure-vnflifecyclemgnt', connectionProfileUuid: 'EWH8-uwXs', excludes: 'test_packages/**/top_level_script_*.py,cloudsure/tpkg_core/tcase/**/top_level_script_*.py ,**/*_test.py,regression/**,**/src/test/**,**/__MACOSX/**,**/*.min.js,**/*.Designer.vb,**/*.designer.vb,**/*Reference.vb,**/*Service.vb,**/*Silverlight.vb,**/*.Designer.cs,**/*.designer.cs,**/*Reference.cs,**/*Service.cs,**/*Silverlight.cs,**/.*,**/Pods/BuildHeaders/**/*.h,**/Pods/Headers/**/*.h,**/node_modules/**,**/bower_components/**,**/target/**,**/bin/**,**/obj/**,**/dist/**,**/lib/**', failureThreshold: 40.0, sourcePath: './VNFLifeCycleMgnt', timeout: 1440, unstableThreshold: 90.0
+          kiuwan applicationName: 'cloudsure-vnflifecyclemgnt-baseline', connectionProfileUuid: 'EWH8-uwXs', excludes: 'test_packages/**/top_level_script_*.py,cloudsure/tpkg_core/tcase/**/top_level_script_*.py ,**/*_test.py,regression/**,**/src/test/**,**/__MACOSX/**,**/*.min.js,**/*.Designer.vb,**/*.designer.vb,**/*Reference.vb,**/*Service.vb,**/*Silverlight.vb,**/*.Designer.cs,**/*.designer.cs,**/*Reference.cs,**/*Service.cs,**/*Silverlight.cs,**/.*,**/Pods/BuildHeaders/**/*.h,**/Pods/Headers/**/*.h,**/node_modules/**,**/bower_components/**,**/target/**,**/bin/**,**/obj/**,**/dist/**,**/lib/**', failureThreshold: 40.0, sourcePath: './VNFLifeCycleMgnt', timeout: 1440, unstableThreshold: 90.0
         }
       }
     }
