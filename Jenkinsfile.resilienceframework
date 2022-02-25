@@ -6,7 +6,7 @@ pipeline {
         dir("${env.WORKSPACE}/resilience-framework"){
           script {
              // The below will clone your repo and will be checked out to master branch by default.
-             git credentialsId: 'orion-api', url: 'git@github.com:SpirentOrion/resilience-framework.git'
+             git credentialsId: 'orion-api', url: 'git@github.com:SpirentOrion/resilience-framework.git', branch: 'main'
           }
         }
       }
