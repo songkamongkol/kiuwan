@@ -3,7 +3,7 @@ pipeline {
      KLA_DIR = "$HOME/jenkins/tools/kiuwan_EWH8-uwXs/KiuwanLocalAnalyzer"
      MEM_MAX = "63488m"
    }
-  agent { node { label 'kiuwan-il' } }
+  agent { node { label 'kiuwan01' } }
   stages {
     stage('Sync') {
       steps{
