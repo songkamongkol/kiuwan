@@ -1,0 +1,16 @@
+pipeline {
+  agent { node { label 'master' } }
+  stages {
+    stage('test') {
+      steps {
+        dir("${env.WORKSPACE}"){
+          script {
+             sh "ls -lat ./*"
+             sh "pwd"
+             echo "this is a test"
+          }
+        }
+      }
+    }
+  }
+}
