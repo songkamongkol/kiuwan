@@ -1,15 +1,86 @@
 pipeline {
   agent any
+  environment {
+     CHANGELIST = "111"
+     ENVIRONMENT_NAME = "is"
+     KLA_DIR = "/spirent/jenkins/tools/kiuwan_${KIUWAN_JENKINS_UUID}/KiuwanLocalAnalyzer"
+     MEM_MAX = "63488m"
+     NODE_ROLE_NAME = "kiuwan"
+     PROVISION_CODE_BRANCH_NAME = "main"
+     VIRTUAL_ENV_NAME = "provision_nodes_venv_3.10.2"
+     JENKINS_URL = "${env.JENKINS_URL}"
+   }
   stages {
-    stage('test') {
+    stage('provision_nodes') {
+      agent { label 'master' }
       steps {
-        dir("${env.WORKSPACE}"){
-          script {
-             sh "ls -lat ./*"
-             sh "pwd"
-             echo "this is a test"
+        git branch:"${PROVISION_CODE_BRANCH_NAME}", credentialsId: 'svc-github-ro', url: 'git@github.com:Spirent-DevOps/automation.git'
+        sh """
+          if [ -L /spirent/.pyenv/versions/${VIRTUAL_ENV_NAME} ] ; then
+              if [ -e /spirent/.pyenv/versions/${VIRTUAL_ENV_NAME} ] ; then
+                  echo "Virtual env ${VIRTUAL_ENV_NAME} exists - DO NOT create"
+              fi
+          else
+              echo "Create virtual env"
+              pyenv virtualenv 3.10.2 ${VIRTUAL_ENV_NAME}
+          fi
+          . /spirent/.pyenv/versions/${VIRTUAL_ENV_NAME}/bin/activate
+          python3 -m pip install -r ${WORKSPACE}/aws/provision-stc-jenkins-build-nodes/requirements.txt
+          python3 ${WORKSPACE}/aws/provision-stc-jenkins-build-nodes/provision-stc-jenkins-build-nodes.py --role ${NODE_ROLE_NAME} --environment ${ENVIRONMENT_NAME} --change_list ${CHANGELIST} --nodes 1  --jenkins_url ${JENKINS_URL} --provision_nodes  true
+        """
+      }
+    }
+    stage('Checkout and Scan') {
+      agent { node { label "role:kiuwan && baseline_changelist:${CHANGELIST}" } }
+      stages {
+        stage('Checkout') {
+          steps {
+            dir("${env.WORKSPACE}/non_tardis_testing"){
+              script {
+                checkout([$class: 'GitSCM', branches: [
+                        [name: "*/master"]
+                    ], doGenerateSubmoduleConfigurations: false, extensions: [
+                        [$class: 'CleanCheckout'], [$class: 'CloneOption', timeout: 30, shallow: true]
+                    ], submoduleCfg: [], userRemoteConfigs: [
+                        [credentialsId: 'svc-github-ro', url: "git@github.com:Spirent-Appsec/non_tardis_testing.git"]
+                    ]])
+              }
+
+            }
           }
         }
+        stage('Scan') {
+          steps {
+            dir("${env.WORKSPACE}"){
+              kiuwan applicationName: 'appsecengine-nontardistesting-baseline',
+                  connectionProfileUuid: "${KIUWAN_JENKINS_UUID}",
+                  excludes: '**/src/test/**,**/__MACOSX/**,**/*.min.js,**/*.Designer.vb,**/*.designer.vb,**/*Reference.vb,**/*Service.vb,**/*Silverlight.vb,**/*.Designer.cs,**/*.designer.cs,**/*Reference.cs,**/*Service.cs,**/*Silverlight.cs,**/.*,**/Pods/BuildHeaders/**/*.h,**/Pods/Headers/**/*.h,**/node_modules/**,**/bower_components/**,**/target/**,**/bin/**,**/obj/**,**/dist/**',
+                  failureThreshold: 40.0,
+                  sourcePath: './non_tardis_testing',
+                  timeout: 1440,
+                  unstableThreshold: 90.0
+            }
+          }
+        }
+      }
+    }
+    stage('terminate_nodes') {
+      agent { label 'master' }
+      steps {
+        git branch:"${PROVISION_CODE_BRANCH_NAME}", credentialsId: 'svc-github-ro', url: 'git@github.com:Spirent-DevOps/automation.git'
+        sh """
+          if [ -L /spirent/.pyenv/versions/${VIRTUAL_ENV_NAME} ] ; then
+              if [ -e /spirent/.pyenv/versions/${VIRTUAL_ENV_NAME} ] ; then
+                  echo "Virtual env ${VIRTUAL_ENV_NAME} exists - DO NOT create"
+              fi
+          else
+              echo "Create virtual env"
+              pyenv virtualenv 3.10.2 ${VIRTUAL_ENV_NAME}
+          fi
+          . /spirent/.pyenv/versions/${VIRTUAL_ENV_NAME}/bin/activate
+          python3 -m pip install -r ${WORKSPACE}/aws/provision-stc-jenkins-build-nodes/requirements.txt
+          python3 ${WORKSPACE}/aws/provision-stc-jenkins-build-nodes/provision-stc-jenkins-build-nodes.py --role ${NODE_ROLE_NAME} --environment ${ENVIRONMENT_NAME} --change_list ${CHANGELIST} --nodes 1  --jenkins_url ${JENKINS_URL} --terminate_nodes  true
+        """
       }
     }
   }
